@@ -64,4 +64,31 @@ describe('parseSections', () => {
     const sections = parseSections(SAMPLE);
     expect('---' in sections).toBe(false);
   });
+
+  test('skips thematic breaks (--- horizontal rules) within section content', () => {
+    const content = `---
+capability: x
+last-updated: 2026-01-01
+---
+
+# X
+
+## Overview
+
+Brief.
+
+---
+
+## Rejected and Reverted
+
+- None on record.
+
+---
+
+## Change Log
+`;
+    const sections = parseSections(content);
+    expect(sections['Rejected and Reverted']).toBe('- None on record.');
+    expect(sections['Overview']).toBe('Brief.');
+  });
 });

@@ -55,4 +55,15 @@ describe('checkCurrency', () => {
     const v = checkCurrency([spec], [record], BASE_CONFIG);
     expect(v.some(x => x.detail.includes('feature-a-v1'))).toBe(true);
   });
+
+  test('passes when two same-date records name the same capability and either is the top entry', () => {
+    const specA = makeSpec('- 2026-01-15 [alpha-fix](changes/2026-01-15-alpha-fix.md)\n- 2026-01-15 [beta-fix](changes/2026-01-15-beta-fix.md)', '2026-01-15');
+    const specB = makeSpec('- 2026-01-15 [beta-fix](changes/2026-01-15-beta-fix.md)\n- 2026-01-15 [alpha-fix](changes/2026-01-15-alpha-fix.md)', '2026-01-15');
+    const records = [
+      makeRecord('2026-01-15', 'alpha-fix', ['feature-a.md']),
+      makeRecord('2026-01-15', 'beta-fix', ['feature-a.md']),
+    ];
+    expect(checkCurrency([specA], records, BASE_CONFIG)).toHaveLength(0);
+    expect(checkCurrency([specB], records, BASE_CONFIG)).toHaveLength(0);
+  });
 });

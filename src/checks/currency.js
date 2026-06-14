@@ -11,8 +11,12 @@ function checkCurrency(specs, changeRecords, config) {
     if (!fm || !fm.specs) { continue; }
     const specsList = Array.isArray(fm.specs) ? fm.specs : [fm.specs];
     for (const capFile of specsList) {
-      if (!latestRecord[capFile] || record.date > latestRecord[capFile].date) {
-        latestRecord[capFile] = { date: record.date, slug: record.slug };
+      if (!latestRecord[capFile]) {
+        latestRecord[capFile] = { date: record.date, slugs: [record.slug] };
+      } else if (record.date > latestRecord[capFile].date) {
+        latestRecord[capFile] = { date: record.date, slugs: [record.slug] };
+      } else if (record.date === latestRecord[capFile].date) {
+        latestRecord[capFile].slugs.push(record.slug);
       }
     }
   }
@@ -29,17 +33,18 @@ function checkCurrency(specs, changeRecords, config) {
       violations.push({
         rule: 'currency',
         file: spec.path,
-        detail: `${filename}: Change Log is empty but change record ${record.slug} (${record.date}) names this capability`,
+        detail: `${filename}: Change Log is empty but change record ${record.slugs[0]} (${record.date}) names this capability`,
       });
       continue;
     }
 
     const firstEntry = clText.split('\n').map(l => l.trim()).find(l => l.startsWith('- '));
-    if (!firstEntry || !firstEntry.includes(record.slug)) {
+    const topMatchesSome = firstEntry && record.slugs.some(slug => firstEntry.includes(slug));
+    if (!topMatchesSome) {
       violations.push({
         rule: 'currency',
         file: spec.path,
-        detail: `${filename}: top Change Log entry does not reference the latest change record ${record.slug}`,
+        detail: `${filename}: top Change Log entry does not reference any of the latest change records (${record.date}): ${record.slugs.join(', ')}`,
       });
     }
 

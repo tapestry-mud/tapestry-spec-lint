@@ -32,6 +32,8 @@ function parseSections(content) {
         currentLines.length = 0;
       }
       currentName = h2[1];
+    } else if (line === '---') {
+      // skip thematic breaks (horizontal rules); they are visual dividers, not content
     } else if (currentName !== null) {
       currentLines.push(line);
     }
