@@ -51,6 +51,24 @@ npm run spec-lint -- --strict    # force strict even if config says lenient
 spec-lint --explain         # print the effective contract for this repo
 ```
 
+## Commands
+
+`lint` is the read-only gate; the others create or repair.
+
+```
+spec-lint [path]                    gate specs/ (read-only; --strict / --lenient / --explain / --json)
+spec-lint init [path]               adopt: specs/ + lenient config + README block + empty index
+spec-lint new <capability> [path]   scaffold a born-conformant capability spec + index row
+spec-lint new change <slug> --release <ver> --specs a.md,b.md [path]
+spec-lint fix [path]                mechanical repairs: managed block, sentinel, index rebuild
+```
+
+`lint` never writes. Passing `--fix` errors and redirects you to `spec-lint fix`.
+`--json` gives CI and agents machine-readable results (per-violation ERROR/WARNING
+level plus a summary) without scraping text. `fix` is idempotent and never invents
+prose - authoring-required failures stay lint failures. `new change` is the single
+generator of a change-record skeleton.
+
 ## Config
 
 Add `specs/lint.config.json` to extend or override the base rules:
@@ -69,6 +87,22 @@ Available fields:
 - `sentinelText`: override the empty-reversal sentinel (rarely needed).
 
 Precedence: `--strict`/`--lenient` flag > `mode` in config > default strict.
+
+## Skill (Claude Code plugin)
+
+This repo self-hosts a Claude Code plugin so an agent can install the spec-lint
+authoring skills (five command-aligned skills - init, new-spec, new-change, fix,
+check - all ship in the one plugin):
+
+```
+/plugin marketplace add tapestry-mud/tapestry-spec-lint
+/plugin install spec-lint@tapestry-spec-lint
+```
+
+One install makes all five skills available. Refresh with `/plugin marketplace update`.
+The plugin version mirrors the npm package version. The skills are guidance; the pinned
+`lint` in each repo is the version-locked backstop, so a slightly stale skill can never
+ship a bad spec.
 
 ## The eight checks
 
