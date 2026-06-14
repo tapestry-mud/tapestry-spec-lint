@@ -1,0 +1,5 @@
+{
+  "name": "spec-lint",
+  "description": "Author, adopt, repair, and gate Tapestry capability specs.",
+  "version": "0.1.1"
+}

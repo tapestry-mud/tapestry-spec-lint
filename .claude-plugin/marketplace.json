@@ -1,0 +1,13 @@
+{
+  "name": "tapestry-spec-lint",
+  "owner": {
+    "name": "tapestry-mud"
+  },
+  "plugins": [
+    {
+      "name": "spec-lint",
+      "source": ".",
+      "description": "Author, adopt, repair, and gate Tapestry capability specs."
+    }
+  ]
+}
