@@ -27,6 +27,7 @@ function parseIndexRows(readmeContent) {
       const capability = cols[1] || '';
       const fileCell = cols[2] || '';
       const date = cols[3] || '';
+      if (!fileCell) { continue; }
       const linkMatch = fileCell.match(/\[([^\]]+)\]\(([^)]+)\)/);
       const file = linkMatch ? linkMatch[2] : fileCell;
       rows.push({ capability, file, date });
