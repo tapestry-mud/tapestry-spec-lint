@@ -1,5 +1,5 @@
 {
-  "name": "@tapestry/spec-lint",
+  "name": "@tapestry-mud/spec-lint",
   "version": "0.1.0",
   "description": "Deterministic capability-spec linter for Tapestry projects",
   "main": "src/index.js",

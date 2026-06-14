@@ -1,4 +1,4 @@
-# @tapestry/spec-lint
+# @tapestry-mud/spec-lint
 
 Deterministic capability-spec linter for [Tapestry](https://github.com/tapestry-mud/tapestry) projects.
 
@@ -11,7 +11,7 @@ Add as a pinned devDependency (no `^` or `~`):
 ```json
 {
   "devDependencies": {
-    "@tapestry/spec-lint": "0.1.0"
+    "@tapestry-mud/spec-lint": "0.1.0"
   }
 }
 ```
@@ -37,7 +37,7 @@ For C# repos with no existing package.json, add a minimal tooling manifest:
     "spec-lint": "spec-lint specs/"
   },
   "devDependencies": {
-    "@tapestry/spec-lint": "0.1.0"
+    "@tapestry-mud/spec-lint": "0.1.0"
   }
 }
 ```

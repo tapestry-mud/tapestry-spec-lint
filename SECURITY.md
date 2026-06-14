@@ -36,7 +36,7 @@ Security fixes are applied to the latest release and the `master` branch only.
 
 ## Scope
 
-**In scope:** `@tapestry/spec-lint` and its test harness.
+**In scope:** `@tapestry-mud/spec-lint` and its test harness.
 
 **Out of scope:** misconfiguration of your own tooling, vulnerabilities in
 upstream Node.js or Jest.
