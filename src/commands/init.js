@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { loadConfig } = require('../config');
-const { renderManagedBlock } = require('../renderer');
+const { renderManagedBlock, MANAGED_BLOCK_START } = require('../renderer');
 const { emptyTable } = require('../index-table');
 const pkg = require('../../package.json');
 
@@ -34,7 +34,7 @@ function init(repoDir) {
     readme = appendBlock(readme, emptyTable());
     messages.push('seeded empty index table');
   }
-  if (readme.indexOf('<!-- spec-lint:start -->') === -1) {
+  if (readme.indexOf(MANAGED_BLOCK_START) === -1) {
     readme = appendBlock(readme, renderManagedBlock(config));
     messages.push('seeded README managed block');
   }
