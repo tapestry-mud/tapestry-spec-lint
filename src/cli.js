@@ -92,6 +92,10 @@ function runNew(flags, positionals) {
       process.stderr.write('usage: spec-lint new change <slug> --release <ver> --specs a.md,b.md [path]\n');
       return 2;
     }
+    if (!flags.release) {
+      process.stderr.write('--release is required for new change (e.g. --release v0.2.0)\n');
+      return 2;
+    }
     const specsDir = resolveSpecsDir(positionals[2]);
     const res = newChange(specsDir, slug, { release: flags.release, specs: flags.specs }, today());
     res.messages.forEach(m => console.log(m));
@@ -111,14 +115,14 @@ function runNew(flags, positionals) {
 function runFix(flags, positionals) {
   const res = fix(resolveSpecsDir(positionals[0]));
   res.messages.forEach(m => console.log(m));
-  return 0;
+  return res.ok ? 0 : 1;
 }
 
 function runInit(flags, positionals) {
   const res = init(path.resolve(positionals[0] || '.'));
   res.messages.forEach(m => console.log(m));
   res.wiring.forEach(line => console.log(line));
-  return 0;
+  return res.ok ? 0 : 1;
 }
 
 function main() {
