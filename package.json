@@ -4,7 +4,7 @@
   "description": "Deterministic capability-spec linter for Tapestry projects",
   "main": "src/index.js",
   "bin": {
-    "spec-lint": "./src/cli.js"
+    "spec-lint": "src/cli.js"
   },
   "scripts": {
     "test": "jest",
