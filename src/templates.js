@@ -37,6 +37,7 @@ function renderCapabilitySpec(slug, lastUpdated, effectiveConfig) {
 }
 
 function renderChangeRecord(slug, release, specsList, effectiveConfig) {
+  // effectiveConfig accepted for call-signature symmetry; change-record body is not config-driven
   const specs = (specsList || []).join(', ');
   const lines = [
     '---',
