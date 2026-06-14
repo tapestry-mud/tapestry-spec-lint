@@ -60,4 +60,27 @@ describe('toJsonReport', () => {
     expect(report.files).toEqual([]);
     fs.rmSync(tmp, { recursive: true });
   });
+
+  test('crossFile violations appear in crossFile array with correct level and shape', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sl-json-cf-'));
+    const specsDir = path.join(tmp, 'specs');
+    fs.mkdirSync(specsDir, { recursive: true });
+    const readme = `# Specs\n\n| Capability | File | Last Updated |\n|------------|------|--------------|\n\n${renderManagedBlock(BASE_CONFIG)}\n`;
+    fs.writeFileSync(path.join(specsDir, 'README.md'), readme);
+    // Create a capability
+    newCapability(specsDir, 'feat-trigger', '2026-01-01');
+    // Create a change record that references feat-trigger but feat-trigger has no Change Log entry
+    fs.mkdirSync(path.join(specsDir, 'changes'), { recursive: true });
+    const changeRecord = '---\nrelease: v1.0\nspecs: [feat-trigger.md]\n---\n\n# My Change\n\n## Why\n\nTest cross-file.\n\n## What\n\nTest cross-file.\n';
+    fs.writeFileSync(path.join(specsDir, 'changes', '2026-01-15-my-change.md'), changeRecord);
+    const report = toJsonReport(specsDir, lint(specsDir, loadConfig(specsDir)), 'strict');
+    expect(report.crossFile.length).toBeGreaterThan(0);
+    expect(report.crossFile.every(v => v.level === 'ERROR')).toBe(true);
+    expect(report.crossFile.every(v => typeof v.rule === 'string')).toBe(true);
+    expect(report.crossFile.every(v => typeof v.file === 'string' && typeof v.detail === 'string')).toBe(true);
+    // crossFile violations are counted in summary.violations
+    const fileCount = report.files.flatMap(f => f.violations).length;
+    expect(report.summary.violations).toBe(fileCount + report.crossFile.length);
+    fs.rmSync(tmp, { recursive: true });
+  });
 });
