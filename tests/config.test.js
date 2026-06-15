@@ -18,7 +18,8 @@ describe('BASE_CONFIG', () => {
     expect(re.test('(src/engine.js:10)')).toBe(true);
     expect(re.test('(config/settings.yaml)')).toBe(true);
     expect(re.test('(@tapestry/core/index.js:5)')).toBe(true);
-    expect(re.test('(README.md)')).toBe(false);
+    expect(re.test('(README.md)')).toBe(true);
+    expect(re.test('(skills/spec-lint-fix/SKILL.md)')).toBe(true);
     expect(re.test('(src/plain-text.txt)')).toBe(false);
   });
 

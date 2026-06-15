@@ -7,7 +7,7 @@ const BASE_CONFIG = {
     'Rejected and Reverted',
     'Change Log',
   ],
-  anchorRegex: String.raw`\([@\w./\\-]+\.(cs|js|ts|json|ya?ml)(:\d+(-\d+)?)?[^)]*\)`,
+  anchorRegex: String.raw`\([@\w./\\-]+\.(cs|js|ts|json|ya?ml|md)(:\d+(-\d+)?)?[^)]*\)`,
   sentinelText: '- None on record.',
   defaultMode: 'strict',
 };

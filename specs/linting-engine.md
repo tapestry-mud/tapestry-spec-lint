@@ -33,3 +33,5 @@ The linting engine is the deterministic checker core of spec-lint. It reads a sp
 - None on record.
 
 ## Change Log
+
+- 2026-06-14: anchor regex accepts .md files for Behavior anchors in @tapestry-mud/spec-lint@0.2.1 (changes/2026-06-14-anchor-regex-md-and-files-allowlist.md)

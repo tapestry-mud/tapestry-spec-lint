@@ -3,6 +3,12 @@
   "version": "0.2.0",
   "description": "Deterministic capability-spec linter for Tapestry projects",
   "main": "src/index.js",
+  "files": [
+    "src",
+    ".claude-plugin",
+    "skills",
+    "README.md"
+  ],
   "bin": {
     "spec-lint": "src/cli.js"
   },
