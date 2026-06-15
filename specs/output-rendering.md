@@ -25,10 +25,11 @@ the README. None of these modules mutate specs; they only render.
 - Files with zero violations are skipped from the JSON files array (src/json-output.js:22-24).
 - Cross-file violations render into a separate top-level crossFile array with the same level/rule/file/detail shape (src/json-output.js:37-43).
 - The top-level report carries mode plus a summary of files (count of file entries), violations (per-file total plus cross-file), and passed; passed is `total === 0` in strict but always true in lenient (src/json-output.js:45-56).
-- The contract renders from the effective config, falling back to BASE_CONFIG for each field, as lines for mode, required sections, the Behavior anchor regex, and the empty-reversal sentinel (src/renderer.js:8-22; src/base-config.js:3-13).
-- The contract also states the Change Log, index-sync, currency, and tombstone rules as fixed prose lines (src/renderer.js:23-30).
-- renderManagedBlock wraps the contract between the start and end markers (src/renderer.js:33-35), which are `<!-- spec-lint:start -->` and `<!-- spec-lint:end -->` (src/renderer.js:5-6).
-- extractManagedBlock returns the trimmed text between the markers, or null when either marker is absent (src/renderer.js:37-42).
+- The contract renders from the effective config, falling back to BASE_CONFIG for each field, as lines for mode, required sections, the Behavior anchor regex, and the empty-reversal sentinel (src/renderer.js:8-22; src/base-config.js:3-14).
+- The contract also states the Change Log, index-sync, currency, and tombstone rules as fixed prose lines (src/renderer.js:24-31).
+- The contract appends an "Excluded from capability checks" line listing the effective `exclude` entries, but only when that list is non-empty, so a repo with no exclude renders an unchanged contract and the readme-drift check covers the exclude only once it is set (src/renderer.js:33-36).
+- renderManagedBlock wraps the contract between the start and end markers (src/renderer.js:41-43), which are `<!-- spec-lint:start -->` and `<!-- spec-lint:end -->` (src/renderer.js:5-6).
+- extractManagedBlock returns the trimmed text between the markers, or null when either marker is absent (src/renderer.js:45-50).
 - The CLI prints the live ruleset for --explain by calling renderContract on the loaded config and returning early before linting (src/cli.js:69-72), and selects JSON vs human output via --json (src/cli.js:77-81).
 
 ## Rejected and Reverted
@@ -37,4 +38,5 @@ the README. None of these modules mutate specs; they only render.
 
 ## Change Log
 
+- 2026-06-15: contract renders a non-empty `exclude` list as an "Excluded from capability checks" line in @tapestry-mud/spec-lint@0.2.2 (changes/2026-06-15-config-exclude-option.md)
 - 2026-06-14: lint --json structured output added in @tapestry-mud/spec-lint@0.2.0 (changes/2026-06-14-authoring-agent-surface.md)

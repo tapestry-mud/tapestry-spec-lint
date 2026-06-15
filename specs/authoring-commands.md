@@ -27,6 +27,7 @@ overwrite an existing file.
 - Repair 1 inserts the sentinel only into a Rejected and Reverted section that is present and empty; a missing section or a non-empty one is left untouched (src/commands/fix.js:14-23, src/commands/fix.js:44-51).
 - Repair 2 regenerates the README managed block in place between its start and end markers, or appends a fresh block if the markers are absent (src/commands/fix.js:25-33, src/commands/fix.js:54-56).
 - Repair 3 reconciles the index from disk while preserving curated order: surviving rows keep their position and capability cell with only the date refreshed, ghost rows drop out, and genuinely-new disk files append at the end (the index engine never re-sorts a curated table) (src/index-table.js:86-115, src/index-table.js:41-44).
+- `fix` discovers the same capability set as the linter, skipping `README.md` and any file matching the effective `exclude` list, so an excluded file gets neither a sentinel injection nor an index row (src/commands/fix.js:40-42).
 - `fix` never touches `lint.config.json` and never invents prose: it only writes the sentinel, the managed block, and reconciled index rows, all mechanical (src/commands/fix.js:35-66).
 - `init` adopts the contract idempotently: it creates `specs/` if missing and writes `lint.config.json` with `{mode: lenient}` only when the file does not already exist (src/commands/init.js:15-27).
 - `init` seeds the README with an empty index table and the managed block, each guarded so a re-run leaves an already-seeded README unchanged (src/commands/init.js:29-41; src/index-table.js:14-16).
@@ -39,4 +40,5 @@ overwrite an existing file.
 
 ## Change Log
 
+- 2026-06-15: fix skips excluded files from sentinel repair and index reconcile in @tapestry-mud/spec-lint@0.2.2 (changes/2026-06-15-config-exclude-option.md)
 - 2026-06-14: new, new change, fix, and init verbs added in @tapestry-mud/spec-lint@0.2.0 (changes/2026-06-14-authoring-agent-surface.md)
