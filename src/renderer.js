@@ -10,8 +10,9 @@ function renderContract(effectiveConfig) {
   const anchorRegex = effectiveConfig.anchorRegex || BASE_CONFIG.anchorRegex;
   const sentinelText = effectiveConfig.sentinelText || BASE_CONFIG.sentinelText;
   const mode = effectiveConfig.mode || BASE_CONFIG.defaultMode;
+  const exclude = effectiveConfig.exclude || BASE_CONFIG.exclude;
 
-  return [
+  const lines = [
     `Mode: ${mode}`,
     '',
     `Required sections: ${sections.join(', ')}`,
@@ -27,7 +28,14 @@ function renderContract(effectiveConfig) {
     'Currency: for each change record naming a capability, the top Change Log entry references that record and last-updated >= record date. A capability named by zero records may have an empty Change Log.',
     '',
     'Tombstone: a change record with status:reverted requires a tombstone entry in the capability Rejected and Reverted (not the empty sentinel).',
-  ].join('\n');
+  ];
+
+  // Only rendered when set, so a repo with no exclude sees an unchanged contract.
+  if (exclude && exclude.length > 0) {
+    lines.push('', `Excluded from capability checks: ${exclude.join(', ')}`);
+  }
+
+  return lines.join('\n');
 }
 
 function renderManagedBlock(effectiveConfig) {

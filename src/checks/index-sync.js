@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const { isExcluded } = require('../exclude');
 
 function parseIndexTable(readmeContent) {
   const entries = [];
@@ -26,11 +27,14 @@ function parseIndexTable(readmeContent) {
 
 function checkIndexSync(specsDir, specs, readmeContent, config) {
   const violations = [];
+  const exclude = (config && config.exclude) || [];
   const indexEntries = parseIndexTable(readmeContent);
   const indexFiles = new Set(indexEntries.map(e => e.file));
   const diskFiles = new Set(specs.map(s => path.basename(s.path)));
 
   for (const entry of indexEntries) {
+    // An excluded file is allowed in or out of the index either way - skip both directions.
+    if (isExcluded(entry.file, exclude)) { continue; }
     if (!diskFiles.has(entry.file)) {
       violations.push({ rule: 'index-sync', detail: `index references ${entry.file} but it does not exist on disk` });
     }

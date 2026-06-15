@@ -53,6 +53,24 @@ describe('loadConfig', () => {
     fs.rmSync(tmp, { recursive: true });
   });
 
+  test('exclude defaults to empty array', () => {
+    const specsDir = path.join(__dirname, 'fixtures/good/complete/specs');
+    const cfg = loadConfig(specsDir);
+    expect(cfg.exclude).toEqual([]);
+  });
+
+  test('exclude is read from config', () => {
+    const os = require('os');
+    const fs = require('fs');
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sl-'));
+    fs.writeFileSync(path.join(tmp, 'lint.config.json'), JSON.stringify({
+      exclude: ['validation-ledger.md', '*-ledger.md'],
+    }));
+    const cfg = loadConfig(tmp);
+    expect(cfg.exclude).toEqual(['validation-ledger.md', '*-ledger.md']);
+    fs.rmSync(tmp, { recursive: true });
+  });
+
   test('extra sections from config are appended', () => {
     const os = require('os');
     const fs = require('fs');

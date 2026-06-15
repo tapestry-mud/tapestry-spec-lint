@@ -13,6 +13,15 @@ describe('renderContract', () => {
     expect(out).toContain('Change Log');
     expect(out).toContain('- None on record.');
   });
+
+  test('omits the exclude line when exclude is empty (default contract unchanged)', () => {
+    expect(renderContract(BASE_CONFIG)).not.toContain('Excluded from capability checks');
+  });
+
+  test('renders the exclude line when exclude is set', () => {
+    const out = renderContract({ ...BASE_CONFIG, exclude: ['validation-ledger.md', '*-ledger.md'] });
+    expect(out).toContain('Excluded from capability checks: validation-ledger.md, *-ledger.md');
+  });
 });
 
 describe('renderManagedBlock', () => {

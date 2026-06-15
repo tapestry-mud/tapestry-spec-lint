@@ -10,6 +10,7 @@ const BASE_CONFIG = {
   anchorRegex: String.raw`\([@\w./\\-]+\.(cs|js|ts|json|ya?ml|md)(:\d+(-\d+)?)?[^)]*\)`,
   sentinelText: '- None on record.',
   defaultMode: 'strict',
+  exclude: [],
 };
 
 module.exports = { BASE_CONFIG };

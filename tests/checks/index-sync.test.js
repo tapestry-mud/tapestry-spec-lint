@@ -47,4 +47,19 @@ describe('checkIndexSync', () => {
     const v = checkIndexSync('/specs', goodSpecs, wrongDate, BASE_CONFIG);
     expect(v.some(x => x.detail.includes('date') || x.detail.includes('last-updated'))).toBe(true);
   });
+
+  test('does not flag an excluded file that is indexed but not a discovered spec', () => {
+    // ledger is on disk but excluded, so engine never hands it to index-sync; if it is
+    // also listed in the index, direction A must not flag it as "not on disk".
+    const readme = `${GOOD_README}| Ledger | [validation-ledger.md](validation-ledger.md) | 2026-01-15 |\n`;
+    const cfg = { ...BASE_CONFIG, exclude: ['validation-ledger.md'] };
+    const v = checkIndexSync('/specs', goodSpecs, readme, cfg);
+    expect(v).toHaveLength(0);
+  });
+
+  test('still flags a non-excluded indexed file that is missing from disk', () => {
+    const readme = `${GOOD_README}| Ledger | [validation-ledger.md](validation-ledger.md) | 2026-01-15 |\n`;
+    const v = checkIndexSync('/specs', goodSpecs, readme, BASE_CONFIG);
+    expect(v.some(x => x.detail.includes('validation-ledger.md') && x.detail.includes('not exist'))).toBe(true);
+  });
 });

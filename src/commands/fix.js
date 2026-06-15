@@ -10,6 +10,7 @@ const {
   MANAGED_BLOCK_END,
 } = require('../renderer');
 const { reconcileIndex } = require('../index-table');
+const { isExcluded } = require('../exclude');
 
 function insertSentinel(content, sentinel) {
   const sections = parseSections(content);
@@ -37,7 +38,7 @@ function fix(specsDir) {
   const messages = [];
 
   const specFiles = fs.readdirSync(specsDir)
-    .filter(f => f.endsWith('.md') && f !== 'README.md')
+    .filter(f => f.endsWith('.md') && f !== 'README.md' && !isExcluded(f, config.exclude))
     .map(f => path.join(specsDir, f));
 
   // Repair 1: sentinel into empty R&R.

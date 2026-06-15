@@ -12,11 +12,13 @@ const { checkIndexSync } = require('./checks/index-sync');
 const { checkCurrency } = require('./checks/currency');
 const { checkTombstone } = require('./checks/tombstone');
 const { checkReadmeDrift } = require('./checks/readme-drift');
+const { isExcluded } = require('./exclude');
 
 function lint(specsDir, effectiveConfig) {
+  const exclude = (effectiveConfig && effectiveConfig.exclude) || [];
   const allFiles = fs.readdirSync(specsDir);
   const specFiles = allFiles
-    .filter(f => f.endsWith('.md') && f !== 'README.md')
+    .filter(f => f.endsWith('.md') && f !== 'README.md' && !isExcluded(f, exclude))
     .map(f => path.join(specsDir, f));
 
   const specs = specFiles.map(filePath => {

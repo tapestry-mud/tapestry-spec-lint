@@ -19,6 +19,7 @@ function loadConfig(specsDir) {
     anchorRegex: repoConfig.anchorRegex || BASE_CONFIG.anchorRegex,
     sentinelText: repoConfig.sentinelText || BASE_CONFIG.sentinelText,
     mode,
+    exclude: Array.isArray(repoConfig.exclude) ? repoConfig.exclude : BASE_CONFIG.exclude,
     rules: Object.assign({}, BASE_CONFIG.rules, repoConfig.rules),
   };
 }
