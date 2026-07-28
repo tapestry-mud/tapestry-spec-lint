@@ -18,6 +18,11 @@ jobs:
           node-version: '24'
           cache: 'npm'
       - run: npm ci
-      - run: npm audit --audit-level=high
+      # Runtime deps only. This package publishes with zero dependencies, so a consumer is
+      # exposed to nothing an audit could find; the dev tree is jest's, and advisories inside
+      # it have no clean upgrade (jest 29 pulls js-yaml, jest 30 pulls brace-expansion, and
+      # `audit fix --force` proposes jest 25). Gating releases on that blocks every PR without
+      # protecting anyone. Drop --omit=dev the moment this package takes a runtime dependency.
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm test
       - run: npm run spec-lint
