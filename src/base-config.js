@@ -11,6 +11,7 @@ const BASE_CONFIG = {
   sentinelText: '- None on record.',
   defaultMode: 'strict',
   exclude: [],
+  anchorResolve: true,
 };
 
 module.exports = { BASE_CONFIG };

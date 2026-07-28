@@ -1,6 +1,6 @@
 ---
 capability: linting-engine
-last-updated: 2026-06-15
+last-updated: 2026-07-28
 ---
 
 # Linting Engine
@@ -16,7 +16,7 @@ The linting engine is the deterministic checker core of spec-lint. It reads a sp
 - Section overrides can either replace the whole list (an array) or append to the base list (a `{ extra: [...] }` object); a missing `sections` key keeps the base four (src/config.js:26-31).
 - `lint(specsDir, effectiveConfig)` enumerates the specs directory, treats every `.md` file except `README.md` and any file matching the effective `exclude` list as a capability spec, and parses each into `{ path, content, frontmatter, sections }` so excluded files are never run through the per-file checks (src/engine.js:17-32).
 - It also loads `README.md` (empty string if absent) and every `.md` under a `changes/` subdirectory, splitting each change filename into a leading `YYYY-MM-DD` date and a trailing slug and parsing its frontmatter (src/engine.js:32-55).
-- It returns `{ specs, fileResults, crossFileViolations }`: `fileResults` maps each spec path to its per-file violations, and `crossFileViolations` is a flat list from the four cross-file checks (src/engine.js:57-75).
+- It returns `{ specs, fileResults, crossFileViolations }`: `fileResults` maps each spec path to its per-file violations, and `crossFileViolations` is a flat list from the cross-file checks (src/engine.js:57-75).
 - Per-file frontmatter check: the spec must have a `---` block; `capability` is required and must equal the file slug; `last-updated` is required and must be a `YYYY-MM-DD` date (src/checks/frontmatter.js:6-25).
 - Per-file sections check: every section name in the effective config must be present as an `## ` heading (src/checks/sections.js:5-15).
 - Per-file behavior check: if a Behavior section exists, its text must contain at least one substring matching the pinned anchor regex; a missing Behavior section is left to the sections check (src/checks/behavior.js:5-19).
@@ -25,7 +25,11 @@ The linting engine is the deterministic checker core of spec-lint. It reads a sp
 - Cross-file index-sync check: README index rows and on-disk specs must be in one-to-one correspondence, and each spec's index date must equal its frontmatter `last-updated`; excluded files are skipped in both directions, so an excluded file is neither required in the index nor flagged when it appears there (src/checks/index-sync.js:28-62).
 - Cross-file currency check: for each capability named by a change record, it finds the latest record date; if the spec's Change Log is empty, or its top entry references none of that date's slugs, or its `last-updated` predates the record, that is a violation; capabilities with no record are left alone (src/checks/currency.js:5-62).
 - Cross-file tombstone check: any change record with frontmatter `status: reverted` requires the specs it names to carry at least one real tombstone bullet (a `- ` line other than the sentinel) in Rejected and Reverted (src/checks/tombstone.js:5-32).
-- Cross-file readme-drift check: if the README contains a spec-lint managed block, its content must match the block rendered from the effective ruleset; an absent block is not a violation (src/checks/readme-drift.js:5-19).
+- Cross-file readme-drift check: if the README contains a spec-lint managed block, its content must match the block rendered from the effective ruleset; an absent block is not a violation (src/checks/readme-drift.js:5-18). The extracted block is normalized to LF before comparison, so a CRLF checkout of an unchanged README is not drift (src/renderer.js:50-58).
+- Per-file anchor-resolve check: each Behavior anchor is opened, and the check reports only what it can prove - the target does not exist, or the line (or the end of the range) is past the end of the file. Code targets resolve from the repo root, sibling capability `.md` links from the specs dir; a missing target is reported once per target rather than once per anchor (src/checks/anchor-resolve.js:26-84). It makes no claim that a line still points at the right code, which is unprovable from a line number and the reason symbol and test-name anchors are preferred.
+- A bare basename with no path separator is skipped by anchor-resolve rather than resolved by searching the tree, so a duplicate basename cannot decide the outcome; `anchorResolve: false` disables the check for a repo not ready for it (src/checks/anchor-resolve.js:29-49, src/config.js:22).
+- Anchor grammar has one parser: file-only, `:line`, `:from-to`, several anchors in one paren separated by `;`, a bare range continuing the previous target, and free notes that are ignored. A part it cannot parse is skipped, so an unfamiliar shape never becomes a false violation (src/anchors.js:19-63).
+- Line endings are a checkout artifact, not contract content: comparisons normalize to LF while writers preserve the endings the file already uses, so a CRLF repo stays CRLF (src/eol.js:7-29).
 - Frontmatter parsing extracts a leading `---` block and reads each line as either a `key: [a, b]` list or a `key: scalar`; section parsing strips the frontmatter, splits the body on `## ` headings, trims each section, and skips bare `---` thematic breaks so dividers are not mistaken for content (src/parser.js:3-45).
 - The engine never decides pass/fail. Strict-versus-lenient is resolved at the CLI: violations only force a nonzero exit in strict mode, while lenient always exits 0 (src/cli.js:73-85).
 
@@ -35,5 +39,6 @@ The linting engine is the deterministic checker core of spec-lint. It reads a sp
 
 ## Change Log
 
+- 2026-07-28: anchor-resolve check opens Behavior anchors and proves they resolve; line endings normalized for comparison in @tapestry-mud/spec-lint@0.3.0 (changes/2026-07-28-anchor-resolution-and-eol.md)
 - 2026-06-15: config `exclude` skips named files/globs from capability discovery and index-sync in @tapestry-mud/spec-lint@0.2.2 (changes/2026-06-15-config-exclude-option.md)
 - 2026-06-14: anchor regex accepts .md files for Behavior anchors in @tapestry-mud/spec-lint@0.2.1 (changes/2026-06-14-anchor-regex-md-and-files-allowlist.md)

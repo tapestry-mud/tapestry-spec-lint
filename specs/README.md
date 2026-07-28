@@ -2,11 +2,11 @@
 
 | Capability | File | Last Updated |
 |------------|------|--------------|
-| Linting Engine | [linting-engine.md](linting-engine.md) | 2026-06-15 |
-| Authoring Commands | [authoring-commands.md](authoring-commands.md) | 2026-06-15 |
-| Output Rendering | [output-rendering.md](output-rendering.md) | 2026-06-15 |
-| Plugin Distribution | [plugin-distribution.md](plugin-distribution.md) | 2026-06-15 |
-| Cli Surface | [cli-surface.md](cli-surface.md) | 2026-06-15 |
+| Linting Engine | [linting-engine.md](linting-engine.md) | 2026-07-28 |
+| Authoring Commands | [authoring-commands.md](authoring-commands.md) | 2026-07-28 |
+| Output Rendering | [output-rendering.md](output-rendering.md) | 2026-07-28 |
+| Plugin Distribution | [plugin-distribution.md](plugin-distribution.md) | 2026-07-28 |
+| Cli Surface | [cli-surface.md](cli-surface.md) | 2026-07-28 |
 
 <!-- spec-lint:start -->
 Mode: strict
@@ -24,4 +24,6 @@ Index sync: every capability .md on disk appears in README index; every indexed 
 Currency: for each change record naming a capability, the top Change Log entry references that record and last-updated >= record date. A capability named by zero records may have an empty Change Log.
 
 Tombstone: a change record with status:reverted requires a tombstone entry in the capability Rejected and Reverted (not the empty sentinel).
+
+Anchor resolution: every Behavior anchor must resolve - the target file exists and the line or range is within it. A line number cannot prove it still points at the right code, so prefer symbol and test-name anchors; :line is a disposable hint.
 <!-- spec-lint:end -->

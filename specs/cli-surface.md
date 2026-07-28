@@ -1,6 +1,6 @@
 ---
 capability: cli-surface
-last-updated: 2026-06-15
+last-updated: 2026-07-28
 ---
 
 # Cli Surface
@@ -16,7 +16,7 @@ re-exported from `src/index.js`.
 
 ## Behavior
 
-- The dispatcher recognizes four verbs (`lint`, `fix`, `new`, `init`) and routes the
+- The dispatcher recognizes the verbs (`lint`, `fix`, `new`, `init`) and routes the
   first argument when it matches one of them (src/cli.js:15; src/cli.js:128-136).
 - A bare invocation with no recognized verb falls back to lint, treating all arguments
   as lint flags and positionals (src/cli.js:130-132; src/cli.js:136).
@@ -50,7 +50,7 @@ re-exported from `src/index.js`.
 - `--help` (or `-h`) on lint prints usage and returns 0 (src/cli.js:34; src/cli.js:47-62).
 - The process exit code is the return value of `main` (src/cli.js:139).
 - The public API re-exports the linter, config loader, formatter, renderer helpers, base
-  config, templates, index table, JSON reporter, and the four command functions from
+  config, templates, index table, JSON reporter, and the command functions from
   `src/index.js` (src/index.js:16-34).
 - The `bin` field maps the `spec-lint` command to `src/cli.js`, and `main` points programmatic
   consumers at `src/index.js` (package.json:5-8).
@@ -61,4 +61,5 @@ re-exported from `src/index.js`.
 
 ## Change Log
 
+- 2026-07-28: hardcoded feature counts removed from the prose so a new verb cannot leave the spec stale in @tapestry-mud/spec-lint@0.3.0 (changes/2026-07-28-anchor-resolution-and-eol.md)
 - 2026-06-14: verb dispatcher and the lint --fix redirect nudge added in @tapestry-mud/spec-lint@0.2.0 (changes/2026-06-14-authoring-agent-surface.md)

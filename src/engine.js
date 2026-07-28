@@ -12,6 +12,7 @@ const { checkIndexSync } = require('./checks/index-sync');
 const { checkCurrency } = require('./checks/currency');
 const { checkTombstone } = require('./checks/tombstone');
 const { checkReadmeDrift } = require('./checks/readme-drift');
+const { checkAnchorResolve } = require('./checks/anchor-resolve');
 const { isExcluded } = require('./exclude');
 
 function lint(specsDir, effectiveConfig) {
@@ -56,6 +57,9 @@ function lint(specsDir, effectiveConfig) {
     }
   }
 
+  // Anchors are authored relative to the repo root (code) or specs/ (sibling capabilities).
+  const anchorCtx = { specsDir, repoRoot: path.dirname(specsDir) };
+
   const fileResults = {};
   for (const spec of specs) {
     fileResults[spec.path] = [
@@ -64,6 +68,7 @@ function lint(specsDir, effectiveConfig) {
       ...checkBehavior(spec.path, spec.content, effectiveConfig),
       ...checkSentinel(spec.path, spec.content, effectiveConfig),
       ...checkChangelog(spec.path, spec.content, effectiveConfig),
+      ...checkAnchorResolve(spec.path, spec.content, effectiveConfig, anchorCtx),
     ];
   }
 

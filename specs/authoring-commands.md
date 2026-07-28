@@ -1,13 +1,13 @@
 ---
 capability: authoring-commands
-last-updated: 2026-06-15
+last-updated: 2026-07-28
 ---
 
 # Authoring Commands
 
 ## Overview
 
-Authoring commands are the write surface of spec-lint: the four subcommands that
+Authoring commands are the write surface of spec-lint: the subcommands that
 create, adopt, and repair the specs/ tree. They are the only paths that mutate
 files (lint is strictly read-only). Each one is a thin command wrapper over shared
 engines - the single-source scaffold templates and the index-table engine - so that
@@ -23,7 +23,7 @@ overwrite an existing file.
 - `new change <slug>` is the sole change-record generator: it date-prepends the slug when undated (matches `YYYY-MM-DD-` else prepends today), creates `specs/changes/`, and writes `specs/changes/<dated>.md` (src/commands/new-change.js:8-26).
 - `new change` refuses to overwrite an existing change record, returning an error if the dated file already exists (src/commands/new-change.js:15-17).
 - The change record carries `--release` and `--specs` into its frontmatter (`release:` and the `specs: [...]` list); its body is fixed (Why / What) and is not config-driven (src/commands/new-change.js:19-21; src/templates.js:39-56).
-- `fix` performs three mechanical repairs and is idempotent, reporting "nothing to fix" when the tree is already clean (src/commands/fix.js:35-71).
+- `fix` performs a bounded set of mechanical repairs and is idempotent, reporting "nothing to fix" when the tree is already clean (src/commands/fix.js:35-71).
 - Repair 1 inserts the sentinel only into a Rejected and Reverted section that is present and empty; a missing section or a non-empty one is left untouched (src/commands/fix.js:14-23, src/commands/fix.js:44-51).
 - Repair 2 regenerates the README managed block in place between its start and end markers, or appends a fresh block if the markers are absent (src/commands/fix.js:25-33, src/commands/fix.js:54-56).
 - Repair 3 reconciles the index from disk while preserving curated order: surviving rows keep their position and capability cell with only the date refreshed, ghost rows drop out, and genuinely-new disk files append at the end (the index engine never re-sorts a curated table) (src/index-table.js:86-115, src/index-table.js:41-44).
@@ -40,5 +40,6 @@ overwrite an existing file.
 
 ## Change Log
 
+- 2026-07-28: hardcoded feature counts removed from the prose so a new subcommand cannot leave the spec stale in @tapestry-mud/spec-lint@0.3.0 (changes/2026-07-28-anchor-resolution-and-eol.md)
 - 2026-06-15: fix skips excluded files from sentinel repair and index reconcile in @tapestry-mud/spec-lint@0.2.2 (changes/2026-06-15-config-exclude-option.md)
 - 2026-06-14: new, new change, fix, and init verbs added in @tapestry-mud/spec-lint@0.2.0 (changes/2026-06-14-authoring-agent-surface.md)

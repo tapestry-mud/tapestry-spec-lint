@@ -2,7 +2,7 @@
 
 Deterministic capability-spec linter for [Tapestry](https://github.com/tapestry-mud/tapestry) projects.
 
-Enforces the [spec contract](https://github.com/tapestry-mud/tapestry/blob/master/specs/README.md) - eight mechanical rules checked on every commit and CI run.
+Enforces the [spec contract](https://github.com/tapestry-mud/tapestry/blob/master/specs/README.md) - mechanical rules checked on every commit and CI run.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Add as a pinned devDependency (no `^` or `~`):
 ```json
 {
   "devDependencies": {
-    "@tapestry-mud/spec-lint": "0.1.0"
+    "@tapestry-mud/spec-lint": "0.3.0"
   }
 }
 ```
@@ -37,7 +37,7 @@ For C# repos with no existing package.json, add a minimal tooling manifest:
     "spec-lint": "spec-lint specs/"
   },
   "devDependencies": {
-    "@tapestry-mud/spec-lint": "0.1.0"
+    "@tapestry-mud/spec-lint": "0.3.0"
   }
 }
 ```
@@ -85,26 +85,29 @@ Available fields:
 - `sections.extra`: additional required section headings beyond the base four.
 - `anchorRegex`: override the pinned anchor regex (rarely needed).
 - `sentinelText`: override the empty-reversal sentinel (rarely needed).
+- `exclude`: filenames or simple `*` globs to drop from capability discovery, for meta files that legitimately live in `specs/` (a validation ledger, a design note). Excluded files are skipped by the per-file checks and by index-sync in both directions.
+- `anchorResolve`: `true` (default) opens every Behavior anchor and fails when the target is gone or the line is past the end of the file. Set `false` to fall back to presence-only anchor checking while a repo catches up.
 
 Precedence: `--strict`/`--lenient` flag > `mode` in config > default strict.
 
 ## Skill (Claude Code plugin)
 
 This repo self-hosts a Claude Code plugin so an agent can install the spec-lint
-authoring skills (five command-aligned skills - init, new-spec, new-change, fix,
-check - all ship in the one plugin):
+authoring skills (one skill per spec-lint subcommand - init, new-spec, new-change,
+fix, check - all ship in the one plugin):
 
 ```
 /plugin marketplace add tapestry-mud/tapestry-spec-lint
 /plugin install spec-lint@tapestry-spec-lint
 ```
 
-One install makes all five skills available. Refresh with `/plugin marketplace update`.
-The plugin version mirrors the npm package version. The skills are guidance; the pinned
+One install makes every skill available. Refresh with `/plugin marketplace update`.
+The plugin manifests carry no version, so Claude Code tracks the git commit and a
+`/plugin marketplace update` always brings the current skills. The skills are guidance; the pinned
 `lint` in each repo is the version-locked backstop, so a slightly stale skill can never
 ship a bad spec.
 
-## The eight checks
+## The checks
 
 <!-- spec-lint:start -->
 Mode: strict
@@ -122,6 +125,8 @@ Index sync: every capability .md on disk appears in README index; every indexed 
 Currency: for each change record naming a capability, the top Change Log entry references that record and last-updated >= record date. A capability named by zero records may have an empty Change Log.
 
 Tombstone: a change record with status:reverted requires a tombstone entry in the capability Rejected and Reverted (not the empty sentinel).
+
+Anchor resolution: every Behavior anchor must resolve - the target file exists and the line or range is within it. A line number cannot prove it still points at the right code, so prefer symbol and test-name anchors; :line is a disposable hint.
 <!-- spec-lint:end -->
 
 ## License

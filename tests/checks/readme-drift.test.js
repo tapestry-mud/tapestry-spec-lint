@@ -18,6 +18,19 @@ describe('checkReadmeDrift', () => {
     expect(checkReadmeDrift(readme, BASE_CONFIG)).toHaveLength(0);
   });
 
+  // Regression: a CRLF checkout of an unchanged README used to fail readme-drift, so the
+  // gate went red on every fresh clone on Windows.
+  test('passes when the block is byte-identical but checked out with CRLF endings', () => {
+    const { renderContract } = require('../../src/renderer');
+    const readme = wrapBlock(renderContract(BASE_CONFIG)).replace(/\n/g, '\r\n');
+    expect(checkReadmeDrift(readme, BASE_CONFIG)).toHaveLength(0);
+  });
+
+  test('still fails on real drift when the file uses CRLF endings', () => {
+    const readme = wrapBlock('Mode: strict\n\nOutdated.').replace(/\n/g, '\r\n');
+    expect(checkReadmeDrift(readme, BASE_CONFIG)).toHaveLength(1);
+  });
+
   test('passes when no managed block present (absent = not a violation)', () => {
     const readme = '# Specs\n\nNo managed block here.\n';
     expect(checkReadmeDrift(readme, BASE_CONFIG)).toHaveLength(0);
