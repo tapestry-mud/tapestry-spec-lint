@@ -20,6 +20,7 @@ function loadConfig(specsDir) {
     sentinelText: repoConfig.sentinelText || BASE_CONFIG.sentinelText,
     mode,
     exclude: Array.isArray(repoConfig.exclude) ? repoConfig.exclude : BASE_CONFIG.exclude,
+    anchorResolve: repoConfig.anchorResolve === false ? false : BASE_CONFIG.anchorResolve,
     rules: Object.assign({}, BASE_CONFIG.rules, repoConfig.rules),
   };
 }

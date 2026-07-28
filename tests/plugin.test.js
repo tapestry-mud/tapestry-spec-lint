@@ -3,13 +3,16 @@
 const fs = require('fs');
 const path = require('path');
 
-const pkg = require('../package.json');
 const plugin = require('../.claude-plugin/plugin.json');
 const marketplace = require('../.claude-plugin/marketplace.json');
 
 describe('CC plugin manifests', () => {
-  test('plugin.json version mirrors package.json', () => {
-    expect(plugin.version).toBe(pkg.version);
+  // Neither manifest carries a version on purpose. With version unset, Claude Code falls back
+  // to the git commit SHA, so adopters track the branch instead of waiting on a bump they
+  // cannot see. Setting it would pin the plugin and serve a cached copy until it changed.
+  test('neither manifest pins a version', () => {
+    expect(plugin.version).toBeUndefined();
+    expect(marketplace.plugins.every(p => p.version === undefined)).toBe(true);
   });
 
   test('plugin.json has a name and description', () => {
@@ -22,7 +25,7 @@ describe('CC plugin manifests', () => {
     expect(marketplace.plugins.some(p => p.name === 'spec-lint' && p.source === '.')).toBe(true);
   });
 
-  test('all five command-aligned skills ship with valid frontmatter', () => {
+  test('every command-aligned skill ships with valid frontmatter', () => {
     const names = [
       'spec-lint-init',
       'spec-lint-new-spec',

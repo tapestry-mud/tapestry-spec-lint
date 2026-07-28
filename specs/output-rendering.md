@@ -1,14 +1,14 @@
 ---
 capability: output-rendering
-last-updated: 2026-06-15
+last-updated: 2026-07-28
 ---
 
 # Output Rendering
 
 ## Overview
 
-Output rendering turns lint results and the effective config into read-only views. Three
-modules cover it: the human formatter prints per-file OK/FAIL/WARN lines plus a summary, the
+Output rendering turns lint results and the effective config into read-only views. The
+modules covering it are: the human formatter prints per-file OK/FAIL/WARN lines plus a summary, the
 JSON reporter emits a machine-readable shape with a mode-aware level and totals, and the
 renderer prints the contract managed block that --explain shows and that init/fix write into
 the README. None of these modules mutate specs; they only render.
@@ -29,7 +29,8 @@ the README. None of these modules mutate specs; they only render.
 - The contract also states the Change Log, index-sync, currency, and tombstone rules as fixed prose lines (src/renderer.js:24-31).
 - The contract appends an "Excluded from capability checks" line listing the effective `exclude` entries, but only when that list is non-empty, so a repo with no exclude renders an unchanged contract and the readme-drift check covers the exclude only once it is set (src/renderer.js:33-36).
 - renderManagedBlock wraps the contract between the start and end markers (src/renderer.js:41-43), which are `<!-- spec-lint:start -->` and `<!-- spec-lint:end -->` (src/renderer.js:5-6).
-- extractManagedBlock returns the trimmed text between the markers, or null when either marker is absent (src/renderer.js:45-50).
+- The contract states the anchor-resolution rule, and renders it either way: the default line requires every Behavior anchor to resolve and names symbol/test anchors as preferable to a disposable `:line`, while `anchorResolve: false` renders an explicit disabled line, so the README always states which gate is in force (src/renderer.js:33-42).
+- extractManagedBlock returns the text between the markers normalized to LF and trimmed, or null when either marker is absent, so line endings from the checkout cannot read as drift (src/renderer.js:50-58).
 - The CLI prints the live ruleset for --explain by calling renderContract on the loaded config and returning early before linting (src/cli.js:69-72), and selects JSON vs human output via --json (src/cli.js:77-81).
 
 ## Rejected and Reverted
@@ -38,5 +39,6 @@ the README. None of these modules mutate specs; they only render.
 
 ## Change Log
 
+- 2026-07-28: contract renders the anchor-resolution rule; managed-block extraction normalizes line endings in @tapestry-mud/spec-lint@0.3.0 (changes/2026-07-28-anchor-resolution-and-eol.md)
 - 2026-06-15: contract renders a non-empty `exclude` list as an "Excluded from capability checks" line in @tapestry-mud/spec-lint@0.2.2 (changes/2026-06-15-config-exclude-option.md)
 - 2026-06-14: lint --json structured output added in @tapestry-mud/spec-lint@0.2.0 (changes/2026-06-14-authoring-agent-surface.md)

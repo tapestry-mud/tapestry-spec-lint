@@ -44,6 +44,9 @@ function buildRepo(repoConfig) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sl-excl-'));
   const specsDir = path.join(tmp, 'specs');
   fs.mkdirSync(specsDir, { recursive: true });
+  // Anchor targets have to exist on disk or anchor-resolve reports them.
+  fs.mkdirSync(path.join(tmp, 'src'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'src', 'a.js'), 'module.exports = {};\n');
   fs.writeFileSync(path.join(specsDir, 'feature-a.md'), FEATURE_A);
   fs.writeFileSync(path.join(specsDir, 'validation-ledger.md'), GARBAGE_LEDGER);
   fs.writeFileSync(path.join(specsDir, 'lint.config.json'), JSON.stringify(repoConfig));

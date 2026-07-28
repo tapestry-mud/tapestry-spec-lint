@@ -9,7 +9,7 @@ Mechanical repair and resync - the deterministic fixes drift creates. CLI is `sp
 
 ## Run it
 
-`spec-lint fix [path]` performs exactly three bounded repairs and nothing else:
+`spec-lint fix [path]` performs only these bounded repairs and nothing else:
 
 - Regenerate the README managed block from the effective ruleset. This is the load-bearing
   repair: a dependabot bump of `@tapestry-mud/spec-lint` changes the rendered contract and

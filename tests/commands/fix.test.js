@@ -57,6 +57,9 @@ function driftedRepo() {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'sl-fix-'));
   const specsDir = path.join(tmp, 'specs');
   fs.mkdirSync(specsDir, { recursive: true });
+  // Anchor targets have to exist on disk or anchor-resolve reports them.
+  fs.mkdirSync(path.join(tmp, 'src'), { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'src', 'a.js'), 'module.exports = {};\n');
   fs.writeFileSync(path.join(specsDir, 'feature-a.md'), SPEC_EMPTY_RR);
   fs.writeFileSync(path.join(specsDir, 'feature-b.md'), SPEC_NO_ANCHOR);
   // README: stale managed block + index missing feature-b (direction B) + ghost row (direction A) + wrong date.
